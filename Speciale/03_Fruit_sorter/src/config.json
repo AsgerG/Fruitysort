@@ -3,11 +3,11 @@
         "folder_path":"C:/Users/Asger/Documents/Fruitysort/Speciale/03_Fruit_sorter/", 
         "data_path":"data/",
         "model_folder_path": "models/",
-        "csv_tag": "categorical"
+        "csv_tag": "binary"
     },
 
     "data":{
-        "categories": 6,
+        "categories": 2,
         "image_size": 128,
         "batch_size": 64
     },

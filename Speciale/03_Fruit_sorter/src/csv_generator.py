@@ -11,10 +11,10 @@ data_path = config['files']['folder_path'] + 'data/'
 categories = config['data']["categories"]
 csv_tag = config['files']['csv_tag']
 
-def createDataframe(category_index, path_suffix,):
+def createDataframe(category_index, path_suffix, folder="dataset/"):
 
     # List files
-    paths = os.listdir(data_path + "dataset/" + path_suffix)
+    paths = os.listdir(data_path + folder + path_suffix)
     
     # Make labels
     labels = np.zeros(len(paths))
@@ -108,3 +108,35 @@ if __name__ == "__main__":
     data = {"train_load":len(final_train_df),
             "test_load":len(final_test_df)}   
     a_file = json.dump(data, a_file)
+
+
+
+
+
+    #create generated data csv
+    genereated_csv = 'data_csv/test_generated_data_' + csv_tag +'.csv'
+
+    if categories == 2:
+        print("\nNumber of items contained in each test Dataframe:")
+        test_df_1 = createDataframe(0, "freshapple/", folder="generated_data/")
+        test_df_2 = createDataframe(1, "rottenapple/", folder="generated_data/")
+        #test_df_3 = createDataframe(0, "freshbanana/", folder="generated_data/")
+        #test_df_4 = createDataframe(1, "rottenbanana/", folder="generated_data/")
+        test_df_5 = createDataframe(0, "freshorange/", folder="generated_data/")
+        #test_df_6 = createDataframe(1, "rottenoranges/", folder="generated_data/")
+
+    else:
+        print("\nNumber of items contained in each test Dataframe:")
+        test_df_1 = createDataframe(0, "freshapple/", folder="generated_data/")
+        test_df_2 = createDataframe(1, "rottenapple/", folder="generated_data/")
+        #test_df_3 = createDataframe(2, "freshbanana/", folder="generated_data/")
+        #test_df_4 = createDataframe(3, "rottenbanana/", folder="generated_data/")
+        test_df_5 = createDataframe(4, "freshorange/", folder="generated_data/")
+        #test_df_6 = createDataframe(5, "rottenoranges/", folder="generated_data/")
+
+
+    # Append Dataframes")    
+    print("\nNumber of items contained in complete test Dataframe:")
+    final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_5))
+    # Save as CSV
+    final_test_df.to_csv(data_path + genereated_csv, index=False)

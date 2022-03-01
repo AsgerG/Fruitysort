@@ -63,6 +63,22 @@ def create_dataloader(data_path, batch_size = 32, image_size = 128, device=defau
     return train_dataloader, test_dataloader 
 
 
+def create_single_dataset(image_size, data_path, data_tag, folder, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file):
+    Transformations = transforms.Compose([transforms.Resize(image_size), transforms.CenterCrop(image_size)])
+    if data_tag == 'train':
+        training_data = CustomImageDataset(data_path + csv_train_file, data_path + folder, transform=Transformations, device=device)
+        print('Training set has {} instances'.format(len(training_data)))
+        return training_data
+    if data_tag == 'test':
+        test_data = CustomImageDataset(data_path + csv_test_file, data_path + folder, transform=Transformations, device=device)
+        print('Validation set has {} instances'.format(len(test_data)))
+        return test_data
+        
+
+def create_single_dataloader(data_path, data_tag, folder, batch_size = 32, image_size = 128, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file):
+    data = create_single_dataset(image_size, data_path, data_tag, folder, device=device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
+    dataloader = DataLoader(data, batch_size=batch_size, shuffle=True)    
+    return dataloader 
 
 #device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 #print(f">> Using device: {device}")
@@ -93,3 +109,25 @@ if __name__ == "__main__":
     plt.imshow(img)
     plt.show()
     print(f"Label: {label}")
+
+
+    """
+    # test dataloader for generated data
+    test_generated_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
+        # Display image example and label.
+    test_genereated_features, test_genereated_labels = next(iter(test_generated_dataloader))
+    img = test_genereated_features[11].squeeze()
+    label = test_genereated_labels[11]
+
+    print(f"image was on device: {img.device}, label on {label.device}")
+    img = img.to("cpu")
+    print(f"image is now on device: {img.device}")
+    
+    os.environ['KMP_DUPLICATE_LIB_OK']='True' # have to set for kernel not to crash on imshow()
+    img = torch.permute(img, (1, 2, 0)) 
+    plt.imshow(img)
+    plt.show()
+    print(f"Label: {label}")
+    """
+
+
