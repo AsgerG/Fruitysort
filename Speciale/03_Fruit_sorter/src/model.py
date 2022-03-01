@@ -7,11 +7,16 @@ from torch.autograd import Variable
 from torch.nn import Linear, Conv2d, BatchNorm2d, MaxPool2d, Dropout2d
 from torch.nn.functional import relu, elu, relu6, sigmoid, tanh, softmax
 
+import json
+
+with open("config.json") as json_data_file:
+    config = json.load(json_data_file)
+
 # hyperameters of the model
-num_classes = 6  
-height = 128
-width = 128
-batch_size = 32 # set at dataloader
+num_classes = config['data']['categories']  
+height = config['data']['image_size']
+width = config['data']['image_size']
+batch_size = config['data']['batch_size']
 channels = 3
 
 # 1. Conv layer
@@ -46,10 +51,13 @@ dropout_rate = 0.5
 # The Network
 class Net(nn.Module):
 
-    def __init__(self):
+    def __init__(self, image_size = height, num_classes=num_classes):
         super(Net, self).__init__()
-        # out_dim = (input_dim - filter_dim + 2padding) / stride + 1
         
+        self.fc_layer_in = int(image_size/8 * image_size/8 * num_filters_conv3)
+        self.fc_layer_out = num_classes
+        # out_dim = (input_dim - filter_dim + 2padding) / stride + 1
+
         #1
         self.conv_1 = Conv2d(in_channels=channels,
                              out_channels=num_filters_conv1,
@@ -76,8 +84,8 @@ class Net(nn.Module):
         self.dropout = Dropout2d(p=dropout_rate)
         
         #4
-        self.l_1 = Linear(in_features=fc_layer_in, 
-                          out_features=fc_layer_out,
+        self.l_1 = Linear(in_features=self.fc_layer_in, 
+                          out_features=self.fc_layer_out,
                           bias=True)
 
 

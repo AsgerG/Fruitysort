@@ -2,24 +2,44 @@ import os
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+import json
+
+#os.chdir("src")
+#os.getcwd()
+
 from model import Net
 from data_loader import create_dataloader
 
+with open("config.json") as json_data_file:
+    config = json.load(json_data_file)
 
-data_path = "C:/Users/Asger/OneDrive/Dokumenter/Speciale/03_Fruit_sorter/data/"
-model_path = "C:/Users/Asger/OneDrive/Dokumenter/Speciale/03_Fruit_sorter/models/model_128_32_feb21/model_20220221_132450_42"
+data_path = config['files']['folder_path'] + 'data/'
+default_device = config['training']['default_device']
 
+folder_path = config['files']['folder_path']
+
+model_name = 'model_128_32_categorical_feb21/model_20220221_132450_42' # model_folder/model_version
+model_path = folder_path + 'models/' + model_name
+
+
+# Init fields   - should match tested model
+model_data = model_name.split("_")
+
+image_size = int(model_data[1])
+batch_size = int(model_data[2])
+num_classes = int(model_data[3])
+csv_tag = model_data[4]
+
+csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
+csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
 
 # Load model
-saved_model = Net()
+saved_model = Net(image_size=image_size, num_classes=num_classes)
 saved_model.load_state_dict(torch.load(model_path))
 
-# Init fields
-image_size = 128
-batch_size = 32 
 
 # Init dataloaders
-train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size)
+train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
 
 
 # Disable grad
@@ -44,5 +64,5 @@ with torch.no_grad():
     print(f"Label: {label}")
     print(f"Prediction: {predicted_class}")
     
-    
+
 

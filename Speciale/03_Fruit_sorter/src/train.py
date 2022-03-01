@@ -1,34 +1,59 @@
+from cProfile import label
 import json
+from msilib.schema import Directory
 import torch.optim as optim
 import torch.nn as nn
 import torch
+import os
 
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
 from data_loader import create_dataloader
 from model import Net
 
-data_path = "C:/Users/Asger/OneDrive/Dokumenter/Speciale/03_Fruit_sorter/data/"
+with open("config.json") as json_data_file:
+    config = json.load(json_data_file)
+
+data_path = config['files']['folder_path'] + 'data/'
+categories = config['data']["categories"]
+csv_tag = config['files']['csv_tag']
+default_device = config['training']['default_device']
+num_classes = config['data']['categories']  
+
+# set data path and device
+folder_path = config['files']['folder_path']
+
+csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
+csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
+
+
+print(f">> Using device: {default_device}")
+
 
 # Load meta data dictionary
 meta_data_file = open(data_path + "meta_data/data.json", "r")
 meta_dict = json.load(meta_data_file)
 
 # Init fields
-image_size = 128
-batch_size = 32 
+EPOCHS = config['training']['epochs']
+image_size = config['data']['image_size']
+batch_size = config['data']['batch_size']
+learning_rate = config['training']['learning_rate']
+
 num_of_pictures = meta_dict["train_load"]
 batches_in_epoch = int(num_of_pictures/batch_size)
 
 # Init dataloaders
-train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size)
+train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
 
 # Init Model
 net = Net()
+net = net.to(default_device)
+
 
 # init loss and learning step type
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(net.parameters(), lr=0.0001)
+optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
 
 def train_one_epoch(epoch_index, tb_writer):
@@ -38,7 +63,10 @@ def train_one_epoch(epoch_index, tb_writer):
     for i, data in enumerate(train_dataloader):
         # Every data instance is an input + label pair
         inputs, labels = data
-
+        
+        #print to verify correct device
+        #print(f"input: {inputs.device}, label: {labels.device}")
+        
         # Zero your gradients for every batch!
         optimizer.zero_grad()
 
@@ -66,11 +94,14 @@ def train_one_epoch(epoch_index, tb_writer):
 
 
 # Initializing in a separate cell so we can easily add more epochs to the same run
-timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
+timestamp = datetime.now().strftime('%Y-%m-%d_%H%M')
+writer = SummaryWriter('runs/fruitysort_trainer_{}'.format(timestamp))
+new_directory = '{}_model_{}_{}_{}_{}'.format(csv_tag, timestamp, num_classes, image_size, batch_size)
+new_model_path = folder_path + "models/" + new_directory 
+os.mkdir(new_model_path)
 epoch_number = 0
 
-EPOCHS = 50
+
 
 best_vloss = 1_000_000.
 
@@ -104,7 +135,7 @@ for epoch in range(EPOCHS):
     # Track best performance, and save the model's state
     if avg_vloss < best_vloss:
         best_vloss = avg_vloss
-        model_path = 'model_{}_{}'.format(timestamp, epoch_number)
+        model_path = new_model_path + '/version_{}_{}'.format(timestamp, epoch_number)
         torch.save(net.state_dict(), model_path)
 
     epoch_number += 1
