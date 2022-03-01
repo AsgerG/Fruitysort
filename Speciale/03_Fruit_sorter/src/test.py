@@ -8,7 +8,7 @@ import json
 #os.getcwd()
 
 from model import Net
-from data_loader import create_single_dataloader
+from data_loader import create_single_dataloader, create_dataloader
 
 with open("config.json") as json_data_file:
     config = json.load(json_data_file)
@@ -18,7 +18,7 @@ default_device = config['training']['default_device']
 
 folder_path = config['files']['folder_path']
 
-model_name = 'binary_model_2022-02-24_1333_2_128_64/model_20220224_133334_84' # model_folder/model_version
+model_name = 'categorical_model_2022-02-24_1333_6_128_64/model_20220224_133334_84' # model_folder/model_version
 model_path = folder_path + 'models/' + model_name
 
 
@@ -38,12 +38,13 @@ saved_model = Net(image_size=image_size, num_classes=num_classes)
 saved_model.load_state_dict(torch.load(model_path))
 
 
-csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
-
 # Init dataloaders
-#train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
-#test_dataloader = create_single_dataloader(data_path, "test", batch_size=batch_size, image_size=image_size, device=default_device, csv_test_file=csv_test_file)
-test_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
+
+#generated data:
+#csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
+#test_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
+
+train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
     
 
 # Disable grad
@@ -70,3 +71,32 @@ with torch.no_grad():
     
 
 
+
+
+    from sklearn.metrics import confusion_matrix
+    import seaborn as sn
+    import pandas as pd
+
+    y_pred = []
+    y_true = []
+
+    # iterate over test data
+    for inputs, labels in test_dataloader:
+        output = saved_model(inputs) # Feed Network
+
+        output = (torch.max(torch.exp(output), 1)[1]).data.cpu().numpy()
+        y_pred.extend(output) # Save Prediction
+        
+        labels = labels.data.cpu().numpy()
+        y_true.extend(labels) # Save Truth
+
+    # constant for classes
+    classes = ('0', '1', '2', '3', '4','5')
+
+    # Build confusion matrix
+    cf_matrix = confusion_matrix(y_true, y_pred)
+    df_cm = pd.DataFrame(cf_matrix/np.sum(cf_matrix) *10, index = [i for i in classes],
+                        columns = [i for i in classes])
+    plt.figure(figsize = (12,7))
+    sn.heatmap(df_cm, annot=True)
+    plt.savefig('output.png')
