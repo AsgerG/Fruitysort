@@ -26,7 +26,7 @@ except:
 
 for file in all_files:
     try:
-        file.download_to_filename(dir_path + file.name)
+        file.download_to_filename(dir_path + file.name + '.png')
     except:
         os.mkdir(dir_path + file.name[0:-14])
         print('Folder created :' + file.name[0:-14])
