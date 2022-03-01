@@ -19,6 +19,10 @@ all_files = storage.list_files()
 dir_path = os.path.dirname(os.path.realpath(__file__))
 dir_path = dir_path[0:-3]+'data\\generated_data\\'
 
+try:
+    os.mkdir(dir_path)
+except:
+    pass
 
 for file in all_files:
     try:
