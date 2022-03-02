@@ -76,7 +76,7 @@ with torch.no_grad():
     from sklearn.metrics import confusion_matrix
     import seaborn as sn
     import pandas as pd
-
+    """
     y_pred = []
     y_true = []
 
@@ -89,14 +89,35 @@ with torch.no_grad():
         
         labels = labels.data.cpu().numpy()
         y_true.extend(labels) # Save Truth
-
+    """
     # constant for classes
-    classes = ('0', '1', '2', '3', '4','5')
+    classes = ('freshapples', 'rottenapples', 'freshbananas', 'rottenbananas', 'freshoranges','rottenoranges')
 
     # Build confusion matrix
     cf_matrix = confusion_matrix(y_true, y_pred)
-    df_cm = pd.DataFrame(cf_matrix/np.sum(cf_matrix) *10, index = [i for i in classes],
+    #cf_matrix = cf_matrix.astype(float)
+    
+    df_percentage = np.empty(shape=(len(classes),len(classes))).astype(float)
+
+    for i in range(len(classes)):
+        df_percentage[:,i] = (cf_matrix[:,i]/(cf_matrix[:,i].sum())*100).round(2)
+
+    df_cm = pd.DataFrame(df_percentage, index = [i for i in classes],
                         columns = [i for i in classes])
-    plt.figure(figsize = (12,7))
-    sn.heatmap(df_cm, annot=True)
+
+    #df_cm = pd.DataFrame(cf_matrix/np.sum(cf_matrix) *10, index = [i for i in classes],
+    #                    columns = [i for i in classes])
+
+
+    labels = (np.asarray([f"{value} % \n ({string}) "
+                      for string, value in zip(cf_matrix.flatten(),
+                                               df_percentage.flatten())])).reshape(6, 6)
+    
+
+    fig, ax = plt.subplots(figsize = (12,7))
+    sn.heatmap(df_percentage, annot=labels, fmt="", cmap='RdYlGn', ax=ax, vmin=0, vmax=100)
+    plt.xlabel("True Class")    
+    plt.ylabel("Predicted Class")
+    plt.show()
     plt.savefig('output.png')
+
