@@ -108,7 +108,7 @@ with torch.no_grad():
 
     labels = (np.asarray([f"{value} % \n ({string}) "
                       for string, value in zip(cf_matrix.flatten(),
-                                               df_percentage.flatten())])).reshape(6, 6)
+                                               df_percentage.flatten())])).reshape(len(classes), len(classes))
     
     test_set_name = csv_test_file.split('/')[1]
 
