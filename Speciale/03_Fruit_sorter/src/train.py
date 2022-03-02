@@ -7,7 +7,7 @@ import torch
 import os
 
 from datetime import datetime
-from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter           # run this in your cmd at src level:   $ tensorboard --logdir=runs
 from data_loader import create_dataloader
 from model import Net
 
