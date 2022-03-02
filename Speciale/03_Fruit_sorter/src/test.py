@@ -117,7 +117,7 @@ with torch.no_grad():
     sn.heatmap(df_cm, annot=labels, fmt="", cmap='RdYlGn', ax=ax, vmin=0, vmax=100)
     plt.xlabel("True Class")    
     plt.ylabel("Predicted Class")
-    plt.title(f"Confusion matrix for : {test_set_name}")
+    plt.title(f"Confusion matrix for : {test_set_name} \n model: {model_name}")
     plt.show()
     plt.savefig('output.png')
 
