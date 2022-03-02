@@ -41,8 +41,8 @@ saved_model.load_state_dict(torch.load(model_path))
 # Init dataloaders
 
 #generated data:
-#csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
-#test_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
+# csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
+# test_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
 
 train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
     
