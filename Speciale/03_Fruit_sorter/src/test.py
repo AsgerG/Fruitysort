@@ -41,8 +41,8 @@ saved_model.load_state_dict(torch.load(model_path))
 # Init dataloaders
 
 #generated data:
-# csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
-# test_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
+#csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
+#test_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
 
 train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
     
@@ -76,7 +76,7 @@ with torch.no_grad():
     from sklearn.metrics import confusion_matrix
     import seaborn as sn
     import pandas as pd
-    """
+    
     y_pred = []
     y_true = []
 
@@ -89,7 +89,7 @@ with torch.no_grad():
         
         labels = labels.data.cpu().numpy()
         y_true.extend(labels) # Save Truth
-    """
+    
     # constant for classes
     classes = ('freshapples', 'rottenapples', 'freshbananas', 'rottenbananas', 'freshoranges','rottenoranges')
 
@@ -105,19 +105,19 @@ with torch.no_grad():
     df_cm = pd.DataFrame(df_percentage, index = [i for i in classes],
                         columns = [i for i in classes])
 
-    #df_cm = pd.DataFrame(cf_matrix/np.sum(cf_matrix) *10, index = [i for i in classes],
-    #                    columns = [i for i in classes])
-
 
     labels = (np.asarray([f"{value} % \n ({string}) "
                       for string, value in zip(cf_matrix.flatten(),
                                                df_percentage.flatten())])).reshape(6, 6)
     
+    test_set_name = csv_test_file.split('/')[1]
 
     fig, ax = plt.subplots(figsize = (12,7))
-    sn.heatmap(df_percentage, annot=labels, fmt="", cmap='RdYlGn', ax=ax, vmin=0, vmax=100)
+
+    sn.heatmap(df_cm, annot=labels, fmt="", cmap='RdYlGn', ax=ax, vmin=0, vmax=100)
     plt.xlabel("True Class")    
     plt.ylabel("Predicted Class")
+    plt.title(f"Confusion matrix for : {test_set_name}")
     plt.show()
     plt.savefig('output.png')
 
