@@ -13,7 +13,7 @@
     },
 
     "training":{
-        "default_device": "cpu",
+        "default_device": "cuda",
         "epochs": 300,
         "learning_rate": 0.0001
     }
