@@ -14,11 +14,11 @@ with open("config.json") as json_data_file:
     config = json.load(json_data_file)
 
 data_path = config['files']['folder_path'] + 'data/'
-default_device = config['training']['default_device']
+default_device = 'cpu'
 
 folder_path = config['files']['folder_path']
 
-model_name = 'categorical_model_2022-02-24_1333_6_128_64/model_20220224_133334_84' # model_folder/model_version
+model_name = 'categorical_model_2022-03-02_1844_6_128_64/version_2022-03-02_1844_61' # model_folder/model_version
 model_path = folder_path + 'models/' + model_name
 
 
@@ -35,8 +35,10 @@ csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
 
 # Load model
 saved_model = Net(image_size=image_size, num_classes=num_classes)
+
 saved_model.load_state_dict(torch.load(model_path))
 
+saved_model = saved_model.to(default_device)
 
 # Init dataloaders
 
