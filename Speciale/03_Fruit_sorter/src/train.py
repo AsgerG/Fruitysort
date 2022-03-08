@@ -95,7 +95,7 @@ def train_one_epoch(epoch_index, tb_writer):
 
 # Initializing in a separate cell so we can easily add more epochs to the same run
 timestamp = datetime.now().strftime('%Y-%m-%d_%H%M')
-writer = SummaryWriter('runs/fruitysort_trainer_{}'.format(timestamp))
+writer = SummaryWriter('runs/{}_model_{}_{}_{}_{}'.format(csv_tag, timestamp, num_classes, image_size, batch_size))
 new_directory = '{}_model_{}_{}_{}_{}'.format(csv_tag, timestamp, num_classes, image_size, batch_size)
 new_model_path = folder_path + "models/" + new_directory 
 os.mkdir(new_model_path)

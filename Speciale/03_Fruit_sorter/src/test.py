@@ -87,12 +87,12 @@ with torch.no_grad():
     # iterate over test data
     for inputs, labels in test_dataloader:
         output = saved_model(inputs) # Feed Network
-        #output_raw = torch.max(output,1)[0].data.cpu().numpy() # Feed Network
+        
         output_raw = output[:,1]
-        output_binary = (torch.max(output, 1)[1]).data.cpu().numpy()
+        output_onehot = (torch.max(output, 1)[1]).data.cpu().numpy()        
         
         y_pred_raw.extend(output_raw)
-        y_pred.extend(output_binary) # Save Prediction
+        y_pred.extend(output_onehot) # Save Prediction
         
         labels = labels.data.cpu().numpy()
         y_true.extend(labels) # Save Truth
