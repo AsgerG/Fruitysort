@@ -21,6 +21,7 @@ default_device = 'cpu'
 
 folder_path = config['files']['folder_path']
 
+#model_name = 'categorical_model_2022-03-02_1844_6_128_64/version_2022-03-02_1844_61'
 model_name = 'binary_model_2022-03-02_2047_2_128_64/version_2022-03-02_2047_143' # model_folder/model_version
 model_path = folder_path + 'models/' + model_name
 
@@ -47,9 +48,9 @@ saved_model = saved_model.to(default_device)
 
 #generated data:
 #csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
-#test_dataloader = create_single_dataloader(data_path, "test", "generated_data/", batch_size = 32, image_size = 128, csv_test_file="data_csv/test_generated_data_" + csv_tag +".csv")
 
-train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
+test_dataloader = create_single_dataloader(data_path, "test", "generated_data_cropped/", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_generated_cropped_data_" + csv_tag +".csv", device=default_device)
+#train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
     
 """
 # Disable grad
@@ -78,7 +79,7 @@ with torch.no_grad():
 
 
 
-
+saved_model.eval()
 with torch.no_grad():
     y_pred = []
     y_pred_raw = []
@@ -109,7 +110,9 @@ with torch.no_grad():
     df_percentage = np.empty(shape=(len(classes),len(classes))).astype(float)
 
     for i in range(len(classes)):
-        df_percentage[:,i] = (cf_matrix[:,i]/(cf_matrix[:,i].sum())*100).round(2)
+        #df_percentage[:,i] = (cf_matrix[:,i]/(cf_matrix[:,i].sum())*100).round(2)
+        df_percentage[i,:] = (cf_matrix[i,:]/(cf_matrix[i,:].sum())*100).round(2)
+
 
     df_cm = pd.DataFrame(df_percentage, index = [i for i in classes],
                         columns = [i for i in classes])
@@ -124,8 +127,8 @@ with torch.no_grad():
     fig, ax = plt.subplots(figsize = (12,7))
 
     sn.heatmap(df_cm, annot=labels, fmt="", cmap='RdYlGn', ax=ax, vmin=0, vmax=100)
-    plt.xlabel("True Class")    
-    plt.ylabel("Predicted Class")
+    plt.xlabel("Predicted Class")    
+    plt.ylabel("True Class")
     plt.title(f"Confusion matrix for : {test_set_name} \n model: {model_name}")
     plt.show()
     plt.savefig('output.png')
@@ -145,3 +148,47 @@ with torch.no_grad():
         plt.title("ROC curve")
         plt.legend(loc="lower right")
         plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+
+# Disable grad
+with torch.no_grad():
+    test_features, test_labels = next(iter(test_dataloader))
+    print(f"Feature batch shape: {test_features.size()}")
+    print(f"Labels batch shape: {test_labels.size()}")
+    for i in range(16):
+        img = test_features[i].squeeze()
+        label = test_labels[i]
+
+        predict_img = img[None, :, :, :]
+        img.size()
+
+        prediction = saved_model(predict_img)
+        predicted_class = np.argmax(prediction)
+
+
+        os.environ['KMP_DUPLICATE_LIB_OK']='True' # have to set for kernel not to crash on imshow()
+        img = torch.permute(img, (1, 2, 0)) 
+        plt.imshow(img)
+        plt.show()
+        print(f"Label: {label}")
+        print(f"Prediction: {predicted_class}")
+        print(max(prediction))
+        
+"""
