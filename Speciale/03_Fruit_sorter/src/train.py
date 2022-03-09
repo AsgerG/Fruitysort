@@ -95,7 +95,7 @@ def train_one_epoch(epoch_index, tb_writer):
 
 # Initializing in a separate cell so we can easily add more epochs to the same run
 timestamp = datetime.now().strftime('%Y-%m-%d_%H%M')
-writer = SummaryWriter('runs/fruitysort_trainer_{}'.format(timestamp))
+writer = SummaryWriter('runs/{}_model_{}_{}_{}_{}'.format(csv_tag, timestamp, num_classes, image_size, batch_size))
 new_directory = '{}_model_{}_{}_{}_{}'.format(csv_tag, timestamp, num_classes, image_size, batch_size)
 new_model_path = folder_path + "models/" + new_directory 
 os.mkdir(new_model_path)
@@ -133,7 +133,7 @@ for epoch in range(EPOCHS):
     writer.flush()
 
     # Track best performance, and save the model's state
-    if avg_vloss < best_vloss or epoch == EPOCHS-1:
+    if avg_vloss < best_vloss or epoch == EPOCHS-1 or epoch%20 == 0:
         best_vloss = avg_vloss
         model_path = new_model_path + '/version_{}_{}'.format(timestamp, epoch_number)
         torch.save(net.state_dict(), model_path)

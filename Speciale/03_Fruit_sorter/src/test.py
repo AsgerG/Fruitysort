@@ -3,6 +3,9 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+from sklearn.metrics import confusion_matrix
+import seaborn as sn
+import pandas as pd
 
 #os.chdir("src")
 #os.getcwd()
@@ -18,7 +21,7 @@ default_device = 'cpu'
 
 folder_path = config['files']['folder_path']
 
-model_name = 'categorical_model_2022-03-02_1844_6_128_64/version_2022-03-02_1844_61' # model_folder/model_version
+model_name = 'binary_model_2022-03-02_2047_2_128_64/version_2022-03-02_2047_143' # model_folder/model_version
 model_path = folder_path + 'models/' + model_name
 
 
@@ -48,7 +51,7 @@ saved_model = saved_model.to(default_device)
 
 train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
     
-
+"""
 # Disable grad
 with torch.no_grad():
     test_features, test_labels = next(iter(test_dataloader))
@@ -70,31 +73,35 @@ with torch.no_grad():
     plt.show()
     print(f"Label: {label}")
     print(f"Prediction: {predicted_class}")
-    
+    """
 
 
 
 
-    from sklearn.metrics import confusion_matrix
-    import seaborn as sn
-    import pandas as pd
-    
+
+with torch.no_grad():
     y_pred = []
+    y_pred_raw = []
     y_true = []
 
     # iterate over test data
     for inputs, labels in test_dataloader:
         output = saved_model(inputs) # Feed Network
-
-        output = (torch.max(torch.exp(output), 1)[1]).data.cpu().numpy()
-        y_pred.extend(output) # Save Prediction
+        
+        output_raw = output[:,1]
+        output_onehot = (torch.max(output, 1)[1]).data.cpu().numpy()        
+        
+        y_pred_raw.extend(output_raw)
+        y_pred.extend(output_onehot) # Save Prediction
         
         labels = labels.data.cpu().numpy()
         y_true.extend(labels) # Save Truth
     
     # constant for classes
-    classes = ('freshapples', 'rottenapples', 'freshbananas', 'rottenbananas', 'freshoranges','rottenoranges')
-
+    if num_classes == 6:
+        classes = ('freshapples', 'rottenapples', 'freshbananas', 'rottenbananas', 'freshoranges','rottenoranges')
+    if num_classes == 2:
+        classes = ('fresh', 'rotten')
     # Build confusion matrix
     cf_matrix = confusion_matrix(y_true, y_pred)
     #cf_matrix = cf_matrix.astype(float)
@@ -123,3 +130,18 @@ with torch.no_grad():
     plt.show()
     plt.savefig('output.png')
 
+
+    if num_classes == 2:
+        from sklearn import metrics
+        fpr, tpr, thresholds = metrics.roc_curve(y_true, y_pred_raw)
+        roc_auc = metrics.auc(fpr, tpr)
+        display = metrics.RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc, estimator_name='ROC curve')
+        display.plot(color="darkorange")
+        plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("ROC curve")
+        plt.legend(loc="lower right")
+        plt.show()
