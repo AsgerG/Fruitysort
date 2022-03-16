@@ -79,10 +79,13 @@ class Net(nn.Module):
                              stride=stride_conv3, 
                              padding = padding_conv3,)
         
-        self.batchnorm = BatchNorm2d(num_filters_conv1) # OBS: make several of these if number of channels changes throughout the system 
+        self.batchnorm_1 = BatchNorm2d(num_filters_conv1) # OBS: make several of these if number of channels changes throughout the system 
+        self.batchnorm_2 = BatchNorm2d(num_filters_conv2)
+        self.batchnorm_3 = BatchNorm2d(num_filters_conv3)
         self.maxpool = MaxPool2d(kernel_size=maxpooling_size, stride=maxpooling_stride)
         self.dropout = Dropout2d(p=dropout_rate)
         
+
         #4
         self.l_1 = Linear(in_features=self.fc_layer_in, 
                           out_features=self.fc_layer_out,
@@ -102,21 +105,21 @@ class Net(nn.Module):
 
         # 1.0
         x = self.conv_1(x)
-        x = self.batchnorm(x)
+        x = self.batchnorm_1(x)
         x = relu(x)
         x = self.maxpool(x)
         x = self.dropout(x)
 
         # 2.0
         x = self.conv_2(x)
-        x = self.batchnorm(x)
+        x = self.batchnorm_2(x)
         x = relu(x)
         x = self.maxpool(x)
         x = self.dropout(x)
 
         # 3.0
         x = self.conv_3(x)
-        x = self.batchnorm(x)
+        x = self.batchnorm_3(x)
         x = relu(x)
         x = self.maxpool(x)
         x = self.dropout(x)

@@ -70,6 +70,10 @@ for label, imgs in filenames.items():
             cv2.circle(output, (int(cx), int(cy)), 4, (0, 0, 255), -1)
 
             plt.imshow(output, cmap="gray")
+            plt.plot(105,200,'ro') 
+            plt.show()
+            print(f"x:{x}, y:{y}, w:{w}, h:{h}")
+
 
             from pathlib import Path
             if not Path(data_path + f"generated_data_largest_component/{label}/").exists():
