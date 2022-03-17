@@ -22,7 +22,7 @@ default_device = 'cpu'
 folder_path = config['files']['folder_path']
 
 #model_name = 'categorical_model_2022-03-02_1844_6_128_64/version_2022-03-02_1844_61'
-model_name = 'binary_model_2022-03-16_1408_2_128_64/version_2022-03-16_1408_25' # model_folder/model_version
+model_name = 'binary_model_2022-03-17_1047_2_128_64/version_2022-03-17_1047_294' # model_folder/model_version
 model_path = folder_path + 'models/' + model_name
 
 
