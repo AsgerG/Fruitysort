@@ -47,10 +47,10 @@ saved_model = saved_model.to(default_device)
 # Init dataloaders
 
 #generated data:
-#csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
+csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
 
-#test_dataloader = create_single_dataloader(data_path, "test", "generated_data_cropped/", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_generated_cropped_data_" + csv_tag +".csv", device=default_device)
-train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
+test_dataloader = create_single_dataloader(data_path, "test", "generated_data_cropped/", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_generated_cropped_data_" + csv_tag +".csv", device=default_device)
+# train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
     
 """
 # Disable grad
