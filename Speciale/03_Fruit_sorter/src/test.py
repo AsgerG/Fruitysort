@@ -40,17 +40,21 @@ csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
 # Load model
 saved_model = Net(image_size=image_size, num_classes=num_classes)
 
+
 saved_model.load_state_dict(torch.load(model_path))
+scripted_model = torch.jit.script(saved_model)
+
+torch.jit.save(scripted_model, 'model_to_nicki.pt')
 
 saved_model = saved_model.to(default_device)
 
 # Init dataloaders
 
 #generated data:
-csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
+# csv_test_file = 'data_csv/test_generated_data_' + csv_tag +'.csv'
 
 test_dataloader = create_single_dataloader(data_path, "test", "generated_data_cropped/", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_generated_cropped_data_" + csv_tag +".csv", device=default_device)
-# train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
+train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
     
 """
 # Disable grad
@@ -97,7 +101,10 @@ with torch.no_grad():
         
         labels = labels.data.cpu().numpy()
         y_true.extend(labels) # Save Truth
+        
     
+
+
     # constant for classes
     if num_classes == 6:
         classes = ('freshapples', 'rottenapples', 'freshbananas', 'rottenbananas', 'freshoranges','rottenoranges')
@@ -153,26 +160,12 @@ with torch.no_grad():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-
 # Disable grad
 with torch.no_grad():
     test_features, test_labels = next(iter(test_dataloader))
     print(f"Feature batch shape: {test_features.size()}")
     print(f"Labels batch shape: {test_labels.size()}")
-    for i in range(16):
+    for i in range(63):
         img = test_features[i].squeeze()
         label = test_labels[i]
 
@@ -183,12 +176,12 @@ with torch.no_grad():
         predicted_class = np.argmax(prediction)
 
 
-        os.environ['KMP_DUPLICATE_LIB_OK']='True' # have to set for kernel not to crash on imshow()
-        img = torch.permute(img, (1, 2, 0)) 
-        plt.imshow(img)
-        plt.show()
-        print(f"Label: {label}")
-        print(f"Prediction: {predicted_class}")
-        print(max(prediction))
+        if(label!=predicted_class):
+            os.environ['KMP_DUPLICATE_LIB_OK']='True' # have to set for kernel not to crash on imshow()
+            img = torch.permute(img, (1, 2, 0)) 
+            plt.imshow(img)
+            plt.show()
+            print(f"Label: {label}")
+            print(f"Prediction: {predicted_class}")
+            print(max(prediction))
         
-"""

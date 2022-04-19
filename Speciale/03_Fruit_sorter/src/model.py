@@ -126,7 +126,8 @@ class Net(nn.Module):
 
         # 4.0
         #x = torch.flatten(x)
-        x = x.view(-1, fc_layer_in)
+        
+        x = x.view(-1,self.fc_layer_in)
         x = self.l_1(x)
         
         return softmax(x, dim=1)
