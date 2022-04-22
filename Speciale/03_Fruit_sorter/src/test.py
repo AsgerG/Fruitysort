@@ -40,6 +40,10 @@ csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
 # Load model
 saved_model = Net(image_size=image_size, num_classes=num_classes)
 
+# For cpu model saving
+# model_path = model_path + '_cpu'
+# saved_model = saved_model.to('cpu')
+# torch.save(saved_model.state_dict(), model_path)
 
 saved_model.load_state_dict(torch.load(model_path))
 scripted_model = torch.jit.script(saved_model)
