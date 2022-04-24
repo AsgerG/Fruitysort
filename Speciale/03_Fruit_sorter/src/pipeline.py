@@ -100,15 +100,15 @@ def cropMetrics(x,y,width,height):
 
 
 
-cam = cv2.VideoCapture(0)
-cam.set(3,1280)
-cam.set(4,720)
-cam.get(cv2.CAP_PROP_FRAME_WIDTH)
-cam.get(cv2.CAP_PROP_FRAME_HEIGHT)
+# cam = cv2.VideoCapture(0)
+# cam.set(3,1280)
+# cam.set(4,720)
+# cam.get(cv2.CAP_PROP_FRAME_WIDTH)
+# cam.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-# s = serial.Serial('COM6',9600)
-# s.write(b'\x03')
-# s.write(b'import hub\r\n')
+s = serial.Serial('COM6',9600)
+s.write(b'\x03')
+s.write(b'import hub\r\n')
 
 with open("config.json") as json_data_file:
     config = json.load(json_data_file)
@@ -158,23 +158,23 @@ result, image = cam.read()
 
 # cv2.imshow("frame",image)
 cv2.imwrite('WebCamCapture.png',image)
-image=cv2.imread('WebCamCapture.png')
+# image=cv2.imread('WebCamCapture.png')
 
 # image = torch.permute(image, (1, 2, 0)) 
 # plt.imshow(image)
 
 
 
-x, y, w, h = getCoordinates(image)
-x, y, l = cropMetrics(x, y, w, h)
-channels , img_h, img_w = image.shape
+# x, y, w, h = getCoordinates(image)
+# x, y, l = cropMetrics(x, y, w, h)
+# channels , img_h, img_w = image.shape
 
 
 image=read_image('WebCamCapture.png')
 
-image = transforms.functional.crop(image,top=int(y),left=int(x),height=int(l),width=int(l))
+# image = transforms.functional.crop(image,top=int(y),left=int(x),height=int(l),width=int(l))
 
-Transformations = transforms.Compose([transforms.Resize(image_size)])
+Transformations = transforms.Compose([transforms.Resize(image_size),transforms.CenterCrop(image_size)])
 image = torch.cat((torch.split(image,1)[0],torch.split(image,1)[1],torch.split(image,1)[2]),0)/255
 image=Transformations(image)
 
