@@ -32,7 +32,7 @@ LEGO.command("motor_a = Motor('A')")
 LEGO.command("motor_a.start(20)")
 # Measure the distance between the Distance Sensor and object in centimeters and inches.
 LEGO.command("wall_detector = DistanceSensor('B')")
-distance = 11
+distance = 12
 while(distance>10):
     LEGO.command("dist_cm = wall_detector.get_distance_cm()")
 # LEGO.test_read(12)
