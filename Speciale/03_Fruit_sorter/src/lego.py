@@ -89,11 +89,11 @@ def largest_connected_component(image):
         cx, cy = centroids[i]
 
         # reject if too small
-        if h < img_h * 0.1 or w < img_w * 0.1:
+        if h < img_h * 0.3 or w < img_w * 0.1:
             continue
 
         # reject if too large
-        if h > img_h * 0.9 or w > img_w * 0.9:
+        if h > img_h * 0.97 or w > img_w * 0.9:
             continue
 
         # pick component that is close to center
@@ -101,7 +101,7 @@ def largest_connected_component(image):
         if dist < best_dist:
             best_match = i
             best_dist = dist
-
+    print(best_match)
     if best_match is not None:
         x = stats[best_match, cv2.CC_STAT_LEFT]
         y = stats[best_match, cv2.CC_STAT_TOP]
@@ -111,7 +111,7 @@ def largest_connected_component(image):
         output = image.copy()
         cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 3)
         plt.imshow(output, cmap="gray"); plt.plot(x,y,'ro'); plt.show() ; print(f"x:{x}, y:{y}, w:{w}, h:{h}")
-
+        
         if(w>=h):
             y=y-(w-h)/2
             if y<0:y=0
@@ -120,6 +120,7 @@ def largest_connected_component(image):
             x=x-(h-w)/2
             if x<0:x=0
             return x, y, h
+    return None,None,None
 
 
 def process_image(image,background, threshold):
@@ -129,7 +130,13 @@ def process_image(image,background, threshold):
 
     img_Out = segmentor.removeBG(image, (255,255,255), threshold=threshold)
     cv2.imwrite('WebCamCapture_R_BG.png',img_Out)
+   
+    timestamp =datetime.now().strftime('%Y-%m-%d_%H%M%S')
+    data_path = config['files']['folder_path'] + 'data/generated_data/segmented_images/image'+timestamp + '.png'
+    cv2.imwrite(data_path,img_Out)
+
     x,y,l =largest_connected_component(img_Out)
+    
     if(background=='default'):
         cv2.imwrite('WebCamCapture.png',image)
     elif(background=='black'):
@@ -141,8 +148,13 @@ def process_image(image,background, threshold):
         print('invalid input')
 
     image=read_image('WebCamCapture.png')
-    image = transforms.functional.crop(image,top=int(y),left=int(x),height=int(l),width=int(l))
-    Transformations = transforms.Compose([transforms.Resize(image_size)])
+    if(x==None):
+        Transformations = transforms.Compose([transforms.Resize(image_size),transforms.CenterCrop(image_size)])
+    else:
+        image = transforms.functional.crop(image,top=int(y),left=int(x),height=int(l),width=int(l))
+        Transformations = transforms.Compose([transforms.Resize(image_size)])
+    
+
     image = torch.cat((torch.split(image,1)[0],torch.split(image,1)[1],torch.split(image,1)[2]),0)/255
     image=Transformations(image)
     return image

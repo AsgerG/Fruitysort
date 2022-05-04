@@ -44,7 +44,7 @@ while(True):
 
     LEGO.command("conveyor_motor.stop()") 
     image = take_picture(url)
-    image  = process_image(image, 'default', 0.8)
+    image  = process_image(image, 'default', 0.7)
     predicted_class, prediction_values = predict_image(saved_model,image)
     print_to_terminal(image,predicted_class,prediction_values)
 
@@ -77,5 +77,6 @@ while(True):
 
 print_to_terminal(image,predicted_class,prediction_values)
 LEGO.command("conveyor_motor.stop()") 
+
 
 
