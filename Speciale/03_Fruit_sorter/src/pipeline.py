@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 from lego import Lego, predict_image, take_picture, init_model, print_to_terminal ,process_image
 
 
@@ -43,8 +44,9 @@ while(True):
         
 
     LEGO.command("conveyor_motor.stop()") 
+    time.sleep(1)
     image = take_picture(url)
-    image  = process_image(image, 'default', 0.7)
+    image  = process_image(image, 'default', 0.5)
     predicted_class, prediction_values = predict_image(saved_model,image)
     print_to_terminal(image,predicted_class,prediction_values)
 

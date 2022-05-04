@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import cvzone
 from cvzone.SelfiSegmentationModule import SelfiSegmentation
+import matplotlib.image as mpimg
 
 with open("config.json") as json_data_file:
     config = json.load(json_data_file)
@@ -56,9 +57,6 @@ class Lego():
 def take_picture(url):
     cam = cv2.VideoCapture(url)
     result, image = cam.read()
-    timestamp =datetime.now().strftime('%Y-%m-%d_%H%M%S')
-    data_path = config['files']['folder_path'] + 'data/generated_data/setup_images/image'+timestamp + '.png'
-    cv2.imwrite(data_path,image)
     return image
 
 
@@ -101,7 +99,7 @@ def largest_connected_component(image):
         if dist < best_dist:
             best_match = i
             best_dist = dist
-    print(best_match)
+
     if best_match is not None:
         x = stats[best_match, cv2.CC_STAT_LEFT]
         y = stats[best_match, cv2.CC_STAT_TOP]
@@ -110,20 +108,54 @@ def largest_connected_component(image):
         cx, cy = centroids[best_match]
         output = image.copy()
         cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 3)
-        plt.imshow(output, cmap="gray"); plt.plot(x,y,'ro'); plt.show() ; print(f"x:{x}, y:{y}, w:{w}, h:{h}")
-        
+        plt.imshow(output, cmap="gray"); plt.plot(x,y,'ro')
+        lcc_plt = plt.figure()
         if(w>=h):
             y=y-(w-h)/2
             if y<0:y=0
-            return x,y,w
+            return x,y,w, lcc_plt
         elif(h>w):
             x=x-(h-w)/2
             if x<0:x=0
-            return x, y, h
-    return None,None,None
+            return x, y, h, lcc_plt
+    return None,None,None, None
+
+def save_all_plots(timestamp, LLC_plt):
+   
+    img_1 = mpimg.imread(config['files']['folder_path'] + 'data/generated_data/setup_images/image'+timestamp + '.png')
+    img_2 = mpimg.imread(config['files']['folder_path'] + 'data/generated_data/segmented_images/image'+timestamp + '.png')
+    img_3 = mpimg.imread(config['files']['folder_path'] + 'data/generated_data/cropped_images/image'+timestamp + '.png')
+
+    
+    ax1 = plt.subplot(2, 2, 1)
+    imgplot = plt.imshow(img_1)
+    plt.title("raw")
+    ax2 = plt.subplot(2, 2, 2)
+    imgplot = plt.imshow(img_2)
+    plt.title("segmentation")
+    ax3 = plt.subplot(2, 2, 3)
+    plt.title("cropped")
+    imgplot = plt.imshow(img_3)
+    if not LLC_plt == None:
+        ax4 = plt.subplot(2, 2, 4)
+        plt.title("LLC")
+        imgplot = LLC_plt
+        ax4.axes.get_xaxis().set_visible(False); ax4.axes.get_yaxis().set_visible(False)
+
+    #plt.show()
+    ax1.axes.get_xaxis().set_visible(False); ax1.axes.get_yaxis().set_visible(False)
+    ax2.axes.get_xaxis().set_visible(False); ax2.axes.get_yaxis().set_visible(False)
+    ax3.axes.get_xaxis().set_visible(False); ax3.axes.get_yaxis().set_visible(False)
+
+    plt.savefig(config['files']['folder_path'] + 'data/generated_data/all_images/image'+timestamp + '.png')
+
 
 
 def process_image(image,background, threshold):
+    timestamp =datetime.now().strftime('%Y-%m-%d_%H%M%S')
+    data_path = config['files']['folder_path'] + 'data/generated_data/setup_images/image'+timestamp + '.png'
+    cv2.imwrite(data_path,image)
+
     image_size= 128
     segmentor = SelfiSegmentation()
 
@@ -135,7 +167,7 @@ def process_image(image,background, threshold):
     data_path = config['files']['folder_path'] + 'data/generated_data/segmented_images/image'+timestamp + '.png'
     cv2.imwrite(data_path,img_Out)
 
-    x,y,l =largest_connected_component(img_Out)
+    x,y,l,lcc_plt =largest_connected_component(img_Out)
     
     if(background=='default'):
         cv2.imwrite('WebCamCapture.png',image)
@@ -157,6 +189,12 @@ def process_image(image,background, threshold):
 
     image = torch.cat((torch.split(image,1)[0],torch.split(image,1)[1],torch.split(image,1)[2]),0)/255
     image=Transformations(image)
+    data_path = config['files']['folder_path'] + 'data/generated_data/cropped_images/image'+timestamp + '.png'
+    img = torch.permute(image, (1, 2, 0))
+    cv2.imwrite(data_path,img.numpy())
+    
+    # save_all_plots(timestamp,lcc_plt)
+
     return image
 
 
