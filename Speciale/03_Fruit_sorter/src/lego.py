@@ -40,13 +40,13 @@ class Lego():
         txt=txt.split(" stop")[-2].split("\r\n")[-1]
         if print_it: print(sensor + " value: " + txt)
         if not txt == "None":
-            return int(txt)
+            return float(txt)
         else:
             return None_value
 
-    def pop_queue(self,push_queue,distance_push, time_saved):
+    def pop_queue(self,push_queue,distance_push, time_saved, threshold=10):
         time_diff = int((datetime.now() - time_saved).seconds)
-        if(distance_push<10 and len(push_queue)>=1 and time_diff > 1):
+        if(distance_push<threshold and len(push_queue)>=1 and time_diff > 1):
             if(push_queue[0]==1):
                 self.command("push_motor.run_for_degrees(620, 100)")
                 self.command("push_motor.run_for_degrees(-620, 100)")

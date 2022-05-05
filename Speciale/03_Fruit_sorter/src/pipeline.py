@@ -32,13 +32,13 @@ time_saved = datetime.now()
 while(True):
 
     #State1 waiting for a fruit under the camera
-    print('State 1')
     #print(distance_cam)
     while(distance_cam>8):
         LEGO.command("dist_cam = image_detector.get_distance_cm()")
         LEGO.command("dist_push = push_detector.get_distance_cm()")
 
         distance_cam = LEGO.read_sensor_data("dist_cam", distance_cam)
+        
         distance_push = LEGO.read_sensor_data("dist_push", 12)
         time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved) 
         
@@ -46,12 +46,8 @@ while(True):
     LEGO.command("conveyor_motor.stop()") 
     time.sleep(1)
     image = take_picture(url)
-    image  = process_image(image, 'default', 0.5)
-    predicted_class, prediction_values = predict_image(saved_model,image)
-    print_to_terminal(image,predicted_class,prediction_values)
-
     LEGO.command("conveyor_motor.start(20)") 
-
+    image  = process_image(image, 'default', 0.9)
     #Prediction
     predicted_class, prediction_values = predict_image(saved_model,image)
     # print_to_terminal(image, predicted_class, prediction_values)
@@ -65,9 +61,8 @@ while(True):
         print('ERROR')
     
     push_queue.append(predicted_class)
-    print(push_queue)
     # Measure the distance between the Distance Sensor and object in centimeters and inches.
-    print('State 2')
+
     #print(distance_cam)
     while(distance_cam<10):
         LEGO.command("dist_cam = image_detector.get_distance_cm()")
