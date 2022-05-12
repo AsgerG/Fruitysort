@@ -3,11 +3,13 @@ import os
 
 label = 4
 model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
-path =r"C:\Users\andri\OneDrive\Documents\GitHub\ModifiedOpenLabelling-main"
+path =r"C:\Users\Asger\OneDrive\Skrivebord\ModifiedOpenLabelling"
 imagepath = path + '\\images'
 textfilepath = path + '\\bbox_txt'
 
-for file in os.listdir(imagepath):
+for k, file in enumerate(os.listdir(imagepath)):
+    if k%10 == 0:
+        print(k)
     try:
         filename = imagepath + '\\' + file
         textfilename = textfilepath + '\\' + file
