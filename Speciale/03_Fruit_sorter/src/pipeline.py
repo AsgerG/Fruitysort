@@ -40,7 +40,7 @@ while(True):
         distance_cam = LEGO.read_sensor_data("dist_cam", distance_cam)
         
         distance_push = LEGO.read_sensor_data("dist_push", 12)
-        time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved, threshold=5) 
+        time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved,threshold=5) 
         
 
     LEGO.command("conveyor_motor.stop()") 
