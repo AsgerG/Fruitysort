@@ -2,12 +2,14 @@ from datetime import datetime
 import time
 from lego import Lego, predict_image, take_picture, init_model, print_to_terminal ,process_image
 import torch
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 
 ## Initalization of Hub and camera
 #url = "http://10.209.243.249:8080/video"
-# url = "http://192.168.1.5:8080/video"
-url = "http://192.168.1.164:8080/video"
+url = "http://192.168.1.5:8080/video"
+# url = "http://192.168.1.164:8080/video"
 push_queue = []
 LEGO = Lego(port="COM5")
 
@@ -20,7 +22,11 @@ LEGO.command("push_detector = DistanceSensor('A')")
 LEGO.command("push_motor = Motor('C')")
 
 
-model = torch.hub.load('ultralytics/yolov5', 'yolov5l') 
+# model = torch.hub.load('ultralytics/yolov5', 'yolov5l')
+
+path_to_yolov5 = r"C:\Users\andri\OneDrive\Documents\DTU\Fruitysort\Speciale\03_Fruit_sorter\src\yolov5"
+path_to_custom_model = r"C:\Users\andri\OneDrive\Documents\DTU\Fruitysort\Speciale\03_Fruit_sorter\src\yolov5\runs\train\exp4\weights\best.pt"
+model = torch.hub.load(path_to_yolov5, 'custom', path=path_to_custom_model, source='local')
 
 
 
@@ -45,7 +51,7 @@ while(True):
         distance_cam = LEGO.read_sensor_data("dist_cam", distance_cam)
         
         distance_push = LEGO.read_sensor_data("dist_push", 12)
-        # time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved, threshold=5) 
+        time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved, threshold=5) 
         
 
     # LEGO.command("conveyor_motor.stop()") 
@@ -59,10 +65,14 @@ while(True):
     results.xyxyn[0].cpu()
     labels, cord_thres = results.xyxyn[0].cpu()[:, -1].numpy(), results.xyxyn[0].cpu()[:, :-1].numpy()
     results.save(save_dir="C:/Users/andri/OneDrive/Documents/DTU/Fruitysort/Speciale/03_Fruit_sorter/src/")
+    
+    
+    
+    img = mpimg.imread(r'C:\Users\andri\OneDrive\Documents\DTU\Fruitysort\Speciale\03_Fruit_sorter\src\WebCamCapture.jpg')
+    imgplot = plt.imshow(img)
+    plt.show()
     predicted_class = results.pandas().xyxy[0]['name'][0]
     print(results.pandas().xyxy[0])
-    # print_to_terminal(image, predicted_class, prediction_values)
-    # print_to_terminal(image,predicted_class,prediction_values)
     ## Reaction
     if(predicted_class=='orange'):
         LEGO.command("hub.display.show('O')")
@@ -71,17 +81,15 @@ while(True):
     else:
         LEGO.command("hub.display.show('X')")
     
-    # push_queue.append(predicted_class)
-    # Measure the distance between the Distance Sensor and object in centimeters and inches.
-
-    #print(distance_cam)
+    push_queue.append(predicted_class)
+    
     while(distance_cam<10):
         LEGO.command("dist_cam = image_detector.get_distance_cm()")
         LEGO.command("dist_push = push_detector.get_distance_cm()")
         
         distance_cam = LEGO.read_sensor_data("dist_cam", distance_cam)
         distance_push = LEGO.read_sensor_data("dist_push", 12)
-        # time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved, threshold=7) 
+        time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved, threshold=7) 
 
 print_to_terminal(image,predicted_class,prediction_values)
 LEGO.command("conveyor_motor.stop()") 

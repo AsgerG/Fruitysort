@@ -57,6 +57,7 @@ class Lego():
 def take_picture(url):
     cam = cv2.VideoCapture(url)
     result, image = cam.read()
+    image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
     return image
 
 
