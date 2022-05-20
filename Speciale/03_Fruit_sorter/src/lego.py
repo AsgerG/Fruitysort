@@ -54,10 +54,11 @@ class Lego():
             return datetime.now()
         return time_saved
 
-def take_picture(url):
+def take_picture(url,yolo=False):
     cam = cv2.VideoCapture(url)
-    result, image = cam.read()
-    image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+    _, image = cam.read()
+    if(yolo):
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
     return image
 
 

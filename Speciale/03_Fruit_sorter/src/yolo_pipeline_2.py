@@ -33,7 +33,7 @@ was_zero_before = False
 while(True):
 
     #Take picture    
-    image = take_picture(url)
+    image = take_picture(url,True)
     # image  = process_image(image, 'default', 0.9)
     
     #Prediction

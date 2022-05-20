@@ -45,7 +45,7 @@ while(True):
 
     LEGO.command("conveyor_motor.stop()") 
     time.sleep(1)
-    image = take_picture(url)
+    image = take_picture(url,False)
     LEGO.command("conveyor_motor.start(20)") 
     image  = process_image(image, 'default', 0.9)
     #Prediction
