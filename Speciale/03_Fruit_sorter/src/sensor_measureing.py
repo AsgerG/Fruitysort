@@ -58,7 +58,7 @@ while(True):
 
 
     LEGO.command("conveyor_motor.stop()") 
-    time.sleep(1)
+    #time.sleep(1)
     image = take_picture(url)
     LEGO.command("conveyor_motor.start(20)") 
     image  = process_image(image, 'default', 0.9)
@@ -97,7 +97,7 @@ LEGO.command("conveyor_motor.stop()")
 
 
 time = datetime.now().strftime('%Y-%m-%d_%H%M')
-test_name = "push_pos_test"
+test_name = "stop_problem_timer"
 csv_path = 'C:/Users/andri/OneDrive/Documents/DTU/Fruitysort/Speciale/03_Fruit_sorter/data/data_csv/sensor_test_'+test_name+time+'.csv'
 df = pd.DataFrame(data=zip(sensor_list1,sensor_list2,running_time_list))
 df.to_csv(csv_path)
