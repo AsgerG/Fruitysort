@@ -1,5 +1,5 @@
 import os
-from importlib_metadata import files
+#from importlib_metadata import files
 import pandas as pd
 import numpy as np
 import json
@@ -53,8 +53,8 @@ def appendDatafremas(df_list):
 if __name__ == "__main__":
 
     # Name csv files generated
-    new_csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
-    new_csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
+    new_csv_train_file = 'data_csv/train_no_bananas' + csv_tag + '.csv'
+    new_csv_test_file = 'data_csv/test_no_bananas' + csv_tag +'.csv'
     print(f"creating {csv_tag} csv with {categories} categories")
 
     if categories == 2:
@@ -62,15 +62,15 @@ if __name__ == "__main__":
         print("Number of items contained in each train Dataframe:")
         train_df_1 = createDataframe(0, "train/freshapples/")
         train_df_2 = createDataframe(1, "train/rottenapples/")
-        train_df_3 = createDataframe(0, "train/freshbanana/")
-        train_df_4 = createDataframe(1, "train/rottenbanana/")
+        #train_df_3 = createDataframe(0, "train/freshbanana/")
+        #train_df_4 = createDataframe(1, "train/rottenbanana/")
         train_df_5 = createDataframe(0, "train/freshoranges/")
         train_df_6 = createDataframe(1, "train/rottenoranges/")
         print("\nNumber of items contained in each test Dataframe:")
         test_df_1 = createDataframe(0, "test/freshapples/")
         test_df_2 = createDataframe(1, "test/rottenapples/")
-        test_df_3 = createDataframe(0, "test/freshbanana/")
-        test_df_4 = createDataframe(1, "test/rottenbanana/")
+        #test_df_3 = createDataframe(0, "test/freshbanana/")
+        #test_df_4 = createDataframe(1, "test/rottenbanana/")
         test_df_5 = createDataframe(0, "test/freshoranges/")
         test_df_6 = createDataframe(1, "test/rottenoranges/")
 
@@ -79,25 +79,25 @@ if __name__ == "__main__":
         print("Number of items contained in each train Dataframe:")
         train_df_1 = createDataframe(0, "train/freshapples/")
         train_df_2 = createDataframe(1, "train/rottenapples/")
-        train_df_3 = createDataframe(2, "train/freshbanana/")
-        train_df_4 = createDataframe(3, "train/rottenbanana/")
-        train_df_5 = createDataframe(4, "train/freshoranges/")
-        train_df_6 = createDataframe(5, "train/rottenoranges/")
+        #train_df_3 = createDataframe(2, "train/freshbanana/")
+        #train_df_4 = createDataframe(3, "train/rottenbanana/")
+        train_df_5 = createDataframe(2, "train/freshoranges/")
+        train_df_6 = createDataframe(3, "train/rottenoranges/")
         print("\nNumber of items contained in each test Dataframe:")
         test_df_1 = createDataframe(0, "test/freshapples/")
         test_df_2 = createDataframe(1, "test/rottenapples/")
-        test_df_3 = createDataframe(2, "test/freshbanana/")
-        test_df_4 = createDataframe(3, "test/rottenbanana/")
-        test_df_5 = createDataframe(4, "test/freshoranges/")
-        test_df_6 = createDataframe(5, "test/rottenoranges/")
+        #test_df_3 = createDataframe(2, "test/freshbanana/")
+        #test_df_4 = createDataframe(3, "test/rottenbanana/")
+        test_df_5 = createDataframe(2, "test/freshoranges/")
+        test_df_6 = createDataframe(3, "test/rottenoranges/")
 
 
 
     # Append Dataframes")    
     print("\nNumber of items contained in complete train Dataframe:")    
-    final_train_df = appendDatafremas((train_df_1, train_df_2, train_df_3, train_df_4, train_df_5, train_df_6))
+    final_train_df = appendDatafremas((train_df_1, train_df_2, train_df_5, train_df_6))
     print("\nNumber of items contained in complete test Dataframe:")
-    final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_3, test_df_4, test_df_5, test_df_6))
+    final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_5, test_df_6))
     
 
     # Save as CSV
@@ -147,3 +147,152 @@ if __name__ == "__main__":
     final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_5))
     # Save as CSV
     final_test_df.to_csv(data_path + genereated_csv, index=False)
+
+
+
+
+
+
+
+
+
+#SAVE VALIDATION SETS!
+
+# Name csv files generated
+
+csv_tag = "binary"
+categories = 2
+
+
+new_csv_train_file = 'data_csv/train_no_bananas_' + csv_tag + '.csv'
+new_csv_test_file = 'data_csv/test_no_bananas_' + csv_tag +'.csv'
+print(f"creating {csv_tag} csv with {categories} categories")
+
+if categories == 2:
+    # Create seperate Dataframes
+    print("Number of items contained in each train Dataframe:")
+    train_df_1 = createDataframe(0, "train/freshapples/")
+    train_df_2 = createDataframe(1, "train/rottenapples/")
+    #train_df_3 = createDataframe(0, "train/freshbanana/")
+    #train_df_4 = createDataframe(1, "train/rottenbanana/")
+    train_df_5 = createDataframe(0, "train/freshoranges/")
+    train_df_6 = createDataframe(1, "train/rottenoranges/")
+    print("\nNumber of items contained in each test Dataframe:")
+    test_df_1 = createDataframe(0, "test/freshapples/")
+    test_df_2 = createDataframe(1, "test/rottenapples/")
+    #test_df_3 = createDataframe(0, "test/freshbanana/")
+    #test_df_4 = createDataframe(1, "test/rottenbanana/")
+    test_df_5 = createDataframe(0, "test/freshoranges/")
+    test_df_6 = createDataframe(1, "test/rottenoranges/")
+
+else:
+    # Create seperate Dataframes
+    print("Number of items contained in each train Dataframe:")
+    train_df_1 = createDataframe(0, "train/freshapples/")
+    train_df_2 = createDataframe(1, "train/rottenapples/")
+    #train_df_3 = createDataframe(2, "train/freshbanana/")
+    #train_df_4 = createDataframe(3, "train/rottenbanana/")
+    train_df_5 = createDataframe(2, "train/freshoranges/")
+    train_df_6 = createDataframe(3, "train/rottenoranges/")
+    print("\nNumber of items contained in each test Dataframe:")
+    test_df_1 = createDataframe(0, "test/freshapples/")
+    test_df_2 = createDataframe(1, "test/rottenapples/")
+    #test_df_3 = createDataframe(2, "test/freshbanana/")
+    #test_df_4 = createDataframe(3, "test/rottenbanana/")
+    test_df_5 = createDataframe(2, "test/freshoranges/")
+    test_df_6 = createDataframe(3, "test/rottenoranges/")
+
+
+
+# Append Dataframes")    
+print("\nNumber of items contained in complete train Dataframe:")    
+final_train_df = appendDatafremas((train_df_1, train_df_2, train_df_5, train_df_6))
+print("\nNumber of items contained in complete test Dataframe:")
+final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_5, test_df_6))
+
+
+# Save as CSV
+final_train_df.to_csv(data_path + new_csv_train_file, index=False)
+final_test_df.to_csv(data_path + new_csv_test_file, index=False)
+
+
+
+
+
+
+
+
+#ICELAND
+
+csv_tag = "categorical"
+categories = 4
+
+new_csv_test_file = 'data_csv/test_iceland_' + csv_tag +'.csv'
+print(f"creating {csv_tag} csv with {categories} categories")
+
+if categories == 2:
+    # Create seperate Dataframes
+    print("\nNumber of items contained in each test Dataframe:")
+    test_df_1 = createDataframe(0, "freshapples/", folder="generated_data/island_cropped/")
+    test_df_2 = createDataframe(1, "rottenapples/", folder="generated_data/island_cropped/")
+    test_df_5 = createDataframe(0, "freshoranges/", folder="generated_data/island_cropped/")
+    test_df_6 = createDataframe(1, "rottenoranges/", folder="generated_data/island_cropped/")
+
+else:
+    # Create seperate Dataframes
+    print("\nNumber of items contained in each test Dataframe:")
+    test_df_1 = createDataframe(0, "freshapples/", folder="generated_data/island_cropped/")
+    test_df_2 = createDataframe(1, "rottenapples/", folder="generated_data/island_cropped/")
+    test_df_5 = createDataframe(2, "freshoranges/", folder="generated_data/island_cropped/")
+    test_df_6 = createDataframe(3, "rottenoranges/", folder="generated_data/island_cropped/")
+
+
+data_path
+# Append Dataframes")    
+print("\nNumber of items contained in complete test Dataframe:")
+final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_5, test_df_6))
+
+
+# Save as CSV
+final_test_df.to_csv(data_path + new_csv_test_file, index=False)
+
+
+
+
+
+
+
+#CONVEYOR BELT
+
+csv_tag = "categorical"
+categories = 4
+
+new_csv_test_file = 'data_csv/test_iceland_' + csv_tag +'.csv'
+print(f"creating {csv_tag} csv with {categories} categories")
+
+if categories == 2:
+    # Create seperate Dataframes
+    print("\nNumber of items contained in each test Dataframe:")
+    test_df_1 = createDataframe(0, "freshapples/", folder="generated_data/setup_images_cropped/")
+    test_df_2 = createDataframe(1, "rottenapples/", folder="generated_data/setup_images_cropped/")
+    test_df_5 = createDataframe(0, "freshoranges/", folder="generated_data/setup_images_cropped/")
+    test_df_6 = createDataframe(1, "rottenoranges/", folder="generated_data/setup_images_cropped/")
+
+else:
+    # Create seperate Dataframes
+    print("\nNumber of items contained in each test Dataframe:")
+    test_df_1 = createDataframe(0, "freshapples/", folder="generated_data/setup_images_cropped/")
+    test_df_2 = createDataframe(1, "rottenapples/", folder="generated_data/setup_images_cropped/")
+    test_df_5 = createDataframe(2, "freshoranges/", folder="generated_data/setup_images_cropped/")
+    test_df_6 = createDataframe(3, "rottenoranges/", folder="generated_data/setup_images_cropped/")
+
+
+data_path
+# Append Dataframes")    
+print("\nNumber of items contained in complete test Dataframe:")
+final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_5, test_df_6))
+
+
+# Save as CSV
+final_test_df.to_csv(data_path + new_csv_test_file, index=False)
+

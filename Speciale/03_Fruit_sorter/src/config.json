@@ -1,6 +1,6 @@
 {
     "files":{
-        "folder_path": "C:/Users/andri/OneDrive/Documents/DTU/Fruitysort/Speciale/03_Fruit_sorter/",
+        "folder_path": "/Users/oas/Desktop/Asger/Fruitysort/Speciale/03_Fruit_sorter/",
         "data_path":"data/",
         "model_folder_path": "models/",
         "csv_tag": "binary"
@@ -13,7 +13,7 @@
     },
 
     "training":{
-        "default_device": "cuda",
+        "default_device": "cpu",
         "epochs": 300,
         "learning_rate": 0.0001
     }

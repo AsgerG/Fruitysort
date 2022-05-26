@@ -1,6 +1,6 @@
 from cProfile import label
 import json
-from msilib.schema import Directory
+#afrom msilib.schema import Directory
 import torch.optim as optim
 import torch.nn as nn
 import torch
@@ -8,7 +8,7 @@ import os
 
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter           # run this in your cmd at src level:   $ tensorboard --logdir=runs
-from data_loader import create_dataloader
+from data_loader import create_dataloader, create_single_dataloader
 from model import Net
 
 with open("config.json") as json_data_file:
@@ -23,8 +23,8 @@ num_classes = config['data']['categories']
 # set data path and device
 folder_path = config['files']['folder_path']
 
-csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
-csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
+csv_train_file = 'data_csv/train_no_bananas_' + csv_tag + '.csv'
+csv_test_file = 'data_csv/test_no_bananas_' + csv_tag +'.csv'
 
 
 print(f">> Using device: {default_device}")
@@ -45,6 +45,9 @@ batches_in_epoch = int(num_of_pictures/batch_size)
 
 # Init dataloaders
 train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
+
+icelandic_dataloader = create_single_dataloader(data_path, "test", "generated_data/island_cropped", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_iceland_" + csv_tag +".csv", device=default_device)
+prototype_dataloader = create_single_dataloader(data_path, "test", "generated_data/setup_images_cropped/", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_prototype_" + csv_tag +".csv", device=default_device)
 
 # Init Model
 net = Net()
@@ -105,6 +108,19 @@ epoch_number = 0
 
 best_vloss = 1_000_000.
 
+def get_avg_validation_loss(test_dataloader, net, criterion):
+    running_vloss = 0.0
+    for i, vdata in enumerate(test_dataloader):
+        vinputs, vlabels = vdata
+        voutputs = net(vinputs)
+        vloss = criterion(voutputs, vlabels)
+        running_vloss += vloss.item()
+
+    avg_vloss = running_vloss / (i + 1)
+    return avg_vloss
+
+
+
 for epoch in range(EPOCHS):
     print('EPOCH {}:'.format(epoch_number + 1))
 
@@ -116,20 +132,26 @@ for epoch in range(EPOCHS):
     net.train(False)
 
     running_vloss = 0.0
+
+    """
     for i, vdata in enumerate(test_dataloader):
         vinputs, vlabels = vdata
         voutputs = net(vinputs)
         vloss = criterion(voutputs, vlabels)
         running_vloss += vloss.item()
-
-    avg_vloss = running_vloss / (i + 1)
-    print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
+    """
+    
+    avg_vloss = get_avg_validation_loss(test_dataloader, net, criterion)
+    avg_iceland_loss = get_avg_validation_loss(test_dataloader, net, criterion)
+    avg_prototype_loss = get_avg_validation_loss(test_dataloader, net, criterion)    
+    print('LOSS train {} valid {}, iceland {}, prototype {}'.format(avg_loss, avg_vloss, avg_iceland_loss, avg_prototype_loss))
 
     # Log the running loss averaged per batch
     # for both training and validation
-    writer.add_scalars('Training vs. Validation Loss',
-                    { 'Training' : avg_loss, 'Validation' : avg_vloss },
-                    epoch_number + 1)
+
+    #writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_loss, 'Validation' : avg_vloss }, epoch_number + 1)
+    writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_loss, 'Validation_kaggle' : avg_vloss, 'Validation_iceland' : avg_iceland_loss, 'Validation_prototype' : avg_prototype_loss }, epoch_number + 1)
+
     writer.flush()
 
     # Track best performance, and save the model's state
