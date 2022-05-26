@@ -142,8 +142,8 @@ for epoch in range(EPOCHS):
     """
     
     avg_vloss = get_avg_validation_loss(test_dataloader, net, criterion)
-    avg_iceland_loss = get_avg_validation_loss(test_dataloader, net, criterion)
-    avg_prototype_loss = get_avg_validation_loss(test_dataloader, net, criterion)    
+    avg_iceland_loss = get_avg_validation_loss(icelandic_dataloader, net, criterion)
+    avg_prototype_loss = get_avg_validation_loss(prototype_dataloader, net, criterion)    
     print('LOSS train {} valid {}, iceland {}, prototype {}'.format(avg_loss, avg_vloss, avg_iceland_loss, avg_prototype_loss))
 
     # Log the running loss averaged per batch

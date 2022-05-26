@@ -264,10 +264,10 @@ final_test_df.to_csv(data_path + new_csv_test_file, index=False)
 
 #CONVEYOR BELT
 
-csv_tag = "categorical"
-categories = 4
+#csv_tag = "categorical"
+#categories = 4
 
-new_csv_test_file = 'data_csv/test_iceland_' + csv_tag +'.csv'
+new_csv_test_file = 'data_csv/test_prototype_' + csv_tag +'.csv'
 print(f"creating {csv_tag} csv with {categories} categories")
 
 if categories == 2:
