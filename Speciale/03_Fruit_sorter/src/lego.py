@@ -48,15 +48,18 @@ class Lego():
         time_diff = int((datetime.now() - time_saved).seconds)
         if(distance_push<threshold and len(push_queue)>=1 and time_diff > 1):
             if(push_queue[0]==1):
-                self.command("push_motor.run_for_degrees(620, 100)")
+                print("push")
                 self.command("push_motor.run_for_degrees(-620, 100)")
+                self.command("push_motor.run_for_degrees(620, 100)")
             push_queue.pop(0)
             return datetime.now()
         return time_saved
 
-def take_picture(url):
+def take_picture(url,yolo=False):
     cam = cv2.VideoCapture(url)
-    result, image = cam.read()
+    _, image = cam.read()
+    if(yolo):
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
     return image
 
 

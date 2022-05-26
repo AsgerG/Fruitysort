@@ -41,7 +41,7 @@ while(True):
 
     #State1 waiting for a fruit under the camera
     #print(distance_cam)
-    while(distance_cam>5):
+    while(distance_cam>6):
         LEGO.command("dist_cam = image_detector.get_distance_cm(short_range = True)")
         LEGO.command("dist_push = push_detector.get_distance_cm(short_range = True)")
         
@@ -53,12 +53,12 @@ while(True):
         distance_push = LEGO.read_sensor_data("dist_push", 12)
         
         sensor_list2.append(distance_push)
-        time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved, threshold=5) 
+        time_saved = LEGO.pop_queue(push_queue, distance_push, time_saved, threshold=7) 
         
 
 
     LEGO.command("conveyor_motor.stop()") 
-    time.sleep(1)
+    #time.sleep(1)
     image = take_picture(url)
     LEGO.command("conveyor_motor.start(20)") 
     image  = process_image(image, 'default', 0.9)
@@ -97,7 +97,7 @@ LEGO.command("conveyor_motor.stop()")
 
 
 time = datetime.now().strftime('%Y-%m-%d_%H%M')
-test_name = "two_oranges_3"
+test_name = "stop_problem_timer"
 csv_path = 'C:/Users/andri/OneDrive/Documents/DTU/Fruitysort/Speciale/03_Fruit_sorter/data/data_csv/sensor_test_'+test_name+time+'.csv'
 df = pd.DataFrame(data=zip(sensor_list1,sensor_list2,running_time_list))
 df.to_csv(csv_path)
@@ -105,10 +105,14 @@ df.to_csv(csv_path)
 running_time_list
 df = pd.read_csv(csv_path,index_col=0)
 
+
+
 df.reset_index().plot.scatter(y='0',x='index',title=("Video sensor: " + test_name))
 df.reset_index().plot.scatter(y='1',x='index', title=("Push sensor: " + test_name))
 
-df.plot(y='0', use_index=True)
+#df.plot(y='0', use_index=True)
 
-df.reset_index().plot.scatter(y='0',x='index',title=("Video sensor: " + test_name))
+#df.reset_index().plot.scatter(y='0',x='index',title=("Video sensor: " + test_name))
 
+df.reset_index().plot(y='0',x='index',title=("Video sensor: " + test_name))
+df.reset_index().plot(y='1',x='index', title=("Push sensor: " + test_name))
