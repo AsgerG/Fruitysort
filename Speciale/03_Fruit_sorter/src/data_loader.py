@@ -47,8 +47,8 @@ class CustomImageDataset(Dataset):
 
 def create_dataset(image_size, data_path, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file):
     Transformations = transforms.Compose([transforms.Resize(image_size), transforms.CenterCrop(image_size)])
-    training_data = CustomImageDataset(data_path + csv_train_file, data_path + "/dataset/",transform=Transformations, device=device)
-    test_data = CustomImageDataset(data_path + csv_test_file, data_path + "/dataset/",transform=Transformations, device=device)
+    training_data = CustomImageDataset(data_path + csv_train_file, data_path + "dataset/",transform=Transformations, device=device)
+    test_data = CustomImageDataset(data_path + csv_test_file, data_path + "dataset/",transform=Transformations, device=device)
     print('Training set has {} instances'.format(len(training_data)))
     print('Validation set has {} instances'.format(len(test_data)))
     
