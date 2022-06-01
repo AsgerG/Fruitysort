@@ -1,20 +1,20 @@
 {
     "files":{
-        "folder_path": "/Users/oas/Desktop/Asger/Fruitysort/Speciale/03_Fruit_sorter/",
+        "folder_path": "C:/Users/andri/OneDrive/Documents/DTU/Fruitysort/Speciale/03_Fruit_sorter/",
         "data_path":"data/",
         "model_folder_path": "models/",
-        "csv_tag": "binary"
+        "csv_tag": "categorical"
     },
 
     "data":{
-        "categories": 2,
-        "image_size": 128,
-        "batch_size": 64
+        "categories": 4,
+        "image_size": 224,
+        "batch_size": 32
     },
 
     "training":{
-        "default_device": "cpu",
-        "epochs": 300,
+        "default_device": "cuda",
+        "epochs": 1000,
         "learning_rate": 0.0001
     }
 

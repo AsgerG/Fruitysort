@@ -53,8 +53,8 @@ def appendDatafremas(df_list):
 if __name__ == "__main__":
 
     # Name csv files generated
-    new_csv_train_file = 'data_csv/train_no_bananas' + csv_tag + '.csv'
-    new_csv_test_file = 'data_csv/test_no_bananas' + csv_tag +'.csv'
+    new_csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
+    new_csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
     print(f"creating {csv_tag} csv with {categories} categories")
 
     if categories == 2:
@@ -62,15 +62,15 @@ if __name__ == "__main__":
         print("Number of items contained in each train Dataframe:")
         train_df_1 = createDataframe(0, "train/freshapples/")
         train_df_2 = createDataframe(1, "train/rottenapples/")
-        #train_df_3 = createDataframe(0, "train/freshbanana/")
-        #train_df_4 = createDataframe(1, "train/rottenbanana/")
+        train_df_3 = createDataframe(0, "train/freshbanana/")
+        train_df_4 = createDataframe(1, "train/rottenbanana/")
         train_df_5 = createDataframe(0, "train/freshoranges/")
         train_df_6 = createDataframe(1, "train/rottenoranges/")
         print("\nNumber of items contained in each test Dataframe:")
         test_df_1 = createDataframe(0, "test/freshapples/")
         test_df_2 = createDataframe(1, "test/rottenapples/")
-        #test_df_3 = createDataframe(0, "test/freshbanana/")
-        #test_df_4 = createDataframe(1, "test/rottenbanana/")
+        test_df_3 = createDataframe(0, "test/freshbanana/")
+        test_df_4 = createDataframe(1, "test/rottenbanana/")
         test_df_5 = createDataframe(0, "test/freshoranges/")
         test_df_6 = createDataframe(1, "test/rottenoranges/")
 
@@ -79,15 +79,15 @@ if __name__ == "__main__":
         print("Number of items contained in each train Dataframe:")
         train_df_1 = createDataframe(0, "train/freshapples/")
         train_df_2 = createDataframe(1, "train/rottenapples/")
-        #train_df_3 = createDataframe(2, "train/freshbanana/")
-        #train_df_4 = createDataframe(3, "train/rottenbanana/")
+        train_df_3 = createDataframe(2, "train/freshbanana/")
+        train_df_4 = createDataframe(3, "train/rottenbanana/")
         train_df_5 = createDataframe(2, "train/freshoranges/")
         train_df_6 = createDataframe(3, "train/rottenoranges/")
         print("\nNumber of items contained in each test Dataframe:")
         test_df_1 = createDataframe(0, "test/freshapples/")
         test_df_2 = createDataframe(1, "test/rottenapples/")
-        #test_df_3 = createDataframe(2, "test/freshbanana/")
-        #test_df_4 = createDataframe(3, "test/rottenbanana/")
+        test_df_3 = createDataframe(2, "test/freshbanana/")
+        test_df_4 = createDataframe(3, "test/rottenbanana/")
         test_df_5 = createDataframe(2, "test/freshoranges/")
         test_df_6 = createDataframe(3, "test/rottenoranges/")
 
@@ -95,9 +95,9 @@ if __name__ == "__main__":
 
     # Append Dataframes")    
     print("\nNumber of items contained in complete train Dataframe:")    
-    final_train_df = appendDatafremas((train_df_1, train_df_2, train_df_5, train_df_6))
+    final_train_df = appendDatafremas((train_df_1, train_df_2, train_df_3, train_df_4, train_df_5, train_df_6))
     print("\nNumber of items contained in complete test Dataframe:")
-    final_test_df = appendDatafremas((test_df_1, test_df_2, test_df_5, test_df_6))
+    final_test_df = appendDatafremas((test_df_1, test_df_2, train_df_3, train_df_4, test_df_5, test_df_6))
     
 
     # Save as CSV
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
 
     # Save meta data 
-    a_file = open(data_path + "meta_data/data.json", "w")
+    a_file = open(data_path + "meta_data/data_with_bananas.json", "w")
     data = {"train_load":len(final_train_df),
             "test_load":len(final_test_df)}   
     a_file = json.dump(data, a_file)

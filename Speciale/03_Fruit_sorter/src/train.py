@@ -25,6 +25,8 @@ folder_path = config['files']['folder_path']
 
 csv_train_file = 'data_csv/train_no_bananas_' + csv_tag + '.csv'
 csv_test_file = 'data_csv/test_no_bananas_' + csv_tag +'.csv'
+#csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
+#csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
 
 
 print(f">> Using device: {default_device}")
@@ -32,6 +34,8 @@ print(f">> Using device: {default_device}")
 
 # Load meta data dictionary
 meta_data_file = open(data_path + "meta_data/data.json", "r")
+#meta_data_file = open(data_path + "meta_data/data_with_bananas.json", "r")
+
 meta_dict = json.load(meta_data_file)
 
 # Init fields
@@ -145,6 +149,7 @@ for epoch in range(EPOCHS):
     avg_iceland_loss = get_avg_validation_loss(icelandic_dataloader, net, criterion)
     avg_prototype_loss = get_avg_validation_loss(prototype_dataloader, net, criterion)    
     print('LOSS train {} valid {}, iceland {}, prototype {}'.format(avg_loss, avg_vloss, avg_iceland_loss, avg_prototype_loss))
+    #print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
 
     # Log the running loss averaged per batch
     # for both training and validation
