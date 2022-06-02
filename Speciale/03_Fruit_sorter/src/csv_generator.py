@@ -81,15 +81,15 @@ if __name__ == "__main__":
         train_df_2 = createDataframe(1, "train/rottenapples/")
         train_df_3 = createDataframe(2, "train/freshbanana/")
         train_df_4 = createDataframe(3, "train/rottenbanana/")
-        train_df_5 = createDataframe(2, "train/freshoranges/")
-        train_df_6 = createDataframe(3, "train/rottenoranges/")
+        train_df_5 = createDataframe(4, "train/freshoranges/")
+        train_df_6 = createDataframe(5, "train/rottenoranges/")
         print("\nNumber of items contained in each test Dataframe:")
         test_df_1 = createDataframe(0, "test/freshapples/")
         test_df_2 = createDataframe(1, "test/rottenapples/")
         test_df_3 = createDataframe(2, "test/freshbanana/")
         test_df_4 = createDataframe(3, "test/rottenbanana/")
-        test_df_5 = createDataframe(2, "test/freshoranges/")
-        test_df_6 = createDataframe(3, "test/rottenoranges/")
+        test_df_5 = createDataframe(4, "test/freshoranges/")
+        test_df_6 = createDataframe(5, "test/rottenoranges/")
 
 
 

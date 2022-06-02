@@ -23,18 +23,18 @@ num_classes = config['data']['categories']
 # set data path and device
 folder_path = config['files']['folder_path']
 
-csv_train_file = 'data_csv/train_no_bananas_' + csv_tag + '.csv'
-csv_test_file = 'data_csv/test_no_bananas_' + csv_tag +'.csv'
-#csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
-#csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
+#csv_train_file = 'data_csv/train_no_bananas_' + csv_tag + '.csv'
+#csv_test_file = 'data_csv/test_no_bananas_' + csv_tag +'.csv'
+csv_train_file = 'data_csv/train_' + csv_tag + '.csv'
+csv_test_file = 'data_csv/test_' + csv_tag +'.csv'
 
 
 print(f">> Using device: {default_device}")
 
 
 # Load meta data dictionary
-meta_data_file = open(data_path + "meta_data/data.json", "r")
-#meta_data_file = open(data_path + "meta_data/data_with_bananas.json", "r")
+#meta_data_file = open(data_path + "meta_data/data.json", "r")
+meta_data_file = open(data_path + "meta_data/data_with_bananas.json", "r")
 
 meta_dict = json.load(meta_data_file)
 
@@ -50,8 +50,8 @@ batches_in_epoch = int(num_of_pictures/batch_size)
 # Init dataloaders
 train_dataloader, test_dataloader = create_dataloader(data_path, batch_size=batch_size, image_size=image_size, device=default_device, csv_train_file=csv_train_file, csv_test_file=csv_test_file)
 
-icelandic_dataloader = create_single_dataloader(data_path, "test", "generated_data/island_cropped", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_iceland_" + csv_tag +".csv", device=default_device)
-prototype_dataloader = create_single_dataloader(data_path, "test", "generated_data/setup_images_cropped/", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_prototype_" + csv_tag +".csv", device=default_device)
+#icelandic_dataloader = create_single_dataloader(data_path, "test", "generated_data/island_cropped", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_iceland_" + csv_tag +".csv", device=default_device)
+#prototype_dataloader = create_single_dataloader(data_path, "test", "generated_data/setup_images_cropped/", batch_size = batch_size, image_size = image_size, csv_test_file="data_csv/test_prototype_" + csv_tag +".csv", device=default_device)
 
 # Init Model
 net = Net()
@@ -146,16 +146,16 @@ for epoch in range(EPOCHS):
     """
     
     avg_vloss = get_avg_validation_loss(test_dataloader, net, criterion)
-    avg_iceland_loss = get_avg_validation_loss(icelandic_dataloader, net, criterion)
-    avg_prototype_loss = get_avg_validation_loss(prototype_dataloader, net, criterion)    
-    print('LOSS train {} valid {}, iceland {}, prototype {}'.format(avg_loss, avg_vloss, avg_iceland_loss, avg_prototype_loss))
-    #print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
+    #avg_iceland_loss = get_avg_validation_loss(icelandic_dataloader, net, criterion)
+    #avg_prototype_loss = get_avg_validation_loss(prototype_dataloader, net, criterion)    
+    #print('LOSS train {} valid {}, iceland {}, prototype {}'.format(avg_loss, avg_vloss, avg_iceland_loss, avg_prototype_loss))
+    print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
 
     # Log the running loss averaged per batch
     # for both training and validation
 
-    #writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_loss, 'Validation' : avg_vloss }, epoch_number + 1)
-    writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_loss, 'Validation_kaggle' : avg_vloss, 'Validation_iceland' : avg_iceland_loss, 'Validation_prototype' : avg_prototype_loss }, epoch_number + 1)
+    writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_loss, 'Validation' : avg_vloss }, epoch_number + 1)
+    #writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_loss, 'Validation_kaggle' : avg_vloss, 'Validation_iceland' : avg_iceland_loss, 'Validation_prototype' : avg_prototype_loss }, epoch_number + 1)
 
     writer.flush()
 
